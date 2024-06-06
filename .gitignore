@@ -400,3 +400,10 @@ FodyWeavers.xsd
 
 # MacOS
 .DS_Store
+
+# dotnet-performance-delta Temp Directories
+a/
+b/
+
+# dotnet-performance-delta result file
+delta.csv
