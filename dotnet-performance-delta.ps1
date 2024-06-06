@@ -17,6 +17,16 @@ param (
     [string]$benchmarkProjectPath
 )
 
+function Test-CommandExists($command)
+{
+    $cmd = Get-Command $command -ErrorAction SilentlyContinue
+    if ($cmd -eq $null)
+    {
+        Write-Host "Error: Required command '$command' not found."
+        Exit
+    }
+}
+
 # Validate inputs
 if ([string]::IsNullOrEmpty($previousCommitId) -or
     [string]::IsNullOrEmpty($previousCommitId) -or
@@ -26,6 +36,10 @@ if ([string]::IsNullOrEmpty($previousCommitId) -or
     Write-Host "Error: All inputs must have a value."
     return
 }
+
+# Validate commands
+Test-CommandExists "git"
+Test-CommandExists "dotnet"
 
 New-Item -ItemType Directory -Path "a"
 New-Item -ItemType Directory -Path "b"
@@ -48,21 +62,25 @@ Set-Location $currDir
 Write-Host "--------------------"
 $allResultsFilesA = Get-ChildItem -Path "./a/$benchmarkProjectPath/BenchmarkDotNet.Artifacts/results" -Filter "*.csv" -File
 $allResultsA = @()
-foreach ($file in $allResultsFilesA) {
+foreach ($file in $allResultsFilesA)
+{
     $allResultsA += Import-Csv $file.FullName
 }
 
 $allResultsFilesB = Get-ChildItem -Path "./b/$benchmarkProjectPath/BenchmarkDotNet.Artifacts/results" -Filter "*.csv" -File
 $allResultsB = @()
-foreach ($file in $allResultsFilesB) {
+foreach ($file in $allResultsFilesB)
+{
     $allResultsB += Import-Csv $file.FullName
 }
 
 Out-File -Append -FilePath "./delta.csv" -InputObject "Method,PreviousMean,CurrentMean,Delta"
 $deltaResult = @()
-foreach($result in $allResultsA) {
+foreach($result in $allResultsA)
+{
     $resultB = $allResultsB | Where-Object { $_.Method -eq $result.Method }
-    if ($resultB -eq $null) {
+    if ($resultB -eq $null)
+    {
         continue
     }
 
