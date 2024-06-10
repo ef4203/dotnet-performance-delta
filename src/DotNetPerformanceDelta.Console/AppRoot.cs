@@ -50,15 +50,16 @@ internal sealed class AppRoot : RootCommand
         this.SetHandler(
             (uri, baseBranch, nextBranch, benchmarkPath) =>
             {
-                new DeltaCommand(logger)
-                    .Invoke(
-                        new DeltaConfiguration
+                new DotNetPerformanceDelta(
+                        x =>
                         {
-                            GitUrl = uri,
-                            BaseBranch = baseBranch,
-                            NextBranch = nextBranch,
-                            BenchmarkPath = benchmarkPath,
-                        });
+                            x.GitUrl = uri;
+                            x.BaseBranch = baseBranch;
+                            x.NextBranch = nextBranch;
+                            x.BenchmarkPath = benchmarkPath;
+                        })
+                    .AddLogger(logger)
+                    .Invoke();
             },
             uriOption,
             baseBranchOption,

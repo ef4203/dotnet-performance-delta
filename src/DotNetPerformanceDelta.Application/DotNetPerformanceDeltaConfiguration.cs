@@ -2,7 +2,7 @@
 
 namespace DotNetPerformanceDelta.Application;
 
-public class DeltaConfiguration
+public class DotNetPerformanceDeltaConfiguration
 {
     public Uri? GitUrl { get; set; }
 

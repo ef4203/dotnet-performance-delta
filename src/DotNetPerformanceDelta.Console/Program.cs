@@ -27,8 +27,11 @@ internal static class Program
                         x.IncludeScopes = false;
                         x.SingleLine = true;
                     });
-
+#if DEBUG
+                builder.SetMinimumLevel(LogLevel.Debug);
+#else
                 builder.SetMinimumLevel(LogLevel.Information);
+#endif
             });
 
         return factory.CreateLogger(string.Empty);
