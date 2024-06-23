@@ -59,7 +59,9 @@ internal sealed class AppRoot : RootCommand
                             x.BenchmarkPath = benchmarkPath;
                         })
                     .AddLogger(logger)
-                    .Invoke();
+                    .InvokeAsync()
+                    .GetAwaiter()
+                    .GetResult();
             },
             uriOption,
             baseBranchOption,
